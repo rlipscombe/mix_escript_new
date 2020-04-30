@@ -33,6 +33,7 @@ defmodule Mix.Tasks.Escript.New do
       main_module: Macro.camelize(app),
       project: Macro.camelize(app)
     ]
+    create_file(".gitignore", gitignore_template(assigns))
     create_file("README.md", readme_template(assigns))
     create_file("mix.exs", mix_exs_template(assigns))
     create_file("lib/#{app}.ex", main_module_template(assigns))
@@ -46,8 +47,13 @@ defmodule Mix.Tasks.Escript.New do
     end
   end
 
+  embed_template(:gitignore, """
+  _build/
+  <%= @project %>
+  """)
+
   embed_template(:readme, """
-  # <= @project %> do
+  # <%= @project %> do
 
   ## Building
 
