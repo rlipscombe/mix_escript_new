@@ -3,6 +3,19 @@ defmodule Mix.Tasks.Escript.New do
 
   import Mix.Generator
 
+  @shortdoc "Creates a new Elixir escript project"
+
+  @moduledoc """
+  Creates a new Elixir escript project.
+  It expects the path of the project as argument.
+
+      mix escript.new PATH [--app APP]
+
+  A project at the given PATH will be created. The
+  application name will be generated from the path,
+  unless `--app` is given.
+  """
+
   @switches [
     app: :string
   ]
