@@ -61,8 +61,10 @@ defmodule Mix.Tasks.Escript.New do
   end
 
   embed_template(:gitignore, """
-  _build/
   <%= @project %>
+  _build/
+  deps/
+  .elixir_ls/
   """)
 
   embed_template(:readme, """
