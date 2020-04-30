@@ -9,15 +9,19 @@ defmodule Mix.Tasks.Escript.New do
   Creates a new Elixir escript project.
   It expects the path of the project as argument.
 
-      mix escript.new PATH [--app APP]
+      mix escript.new PATH [--app APP] [--noinput]
 
   A project at the given PATH will be created. The
   application name will be generated from the path,
   unless `--app` is given.
+
+  A `--noinput` option can be given to add "-noinput"
+  to the emulator flags.
   """
 
   @switches [
-    app: :string
+    app: :string,
+    noinput: :boolean
   ]
 
   @impl Mix.Task
@@ -28,6 +32,7 @@ defmodule Mix.Tasks.Escript.New do
 
       [path | _] ->
         app = opts[:app] || Path.basename(Path.expand(path))
+        noinput = opts[:noinput]
 
         unless path == "." do
           check_directory_existence!(path)
@@ -35,16 +40,17 @@ defmodule Mix.Tasks.Escript.New do
         end
 
         File.cd!(path, fn ->
-          generate(app, path)
+          generate(app, noinput)
         end)
     end
   end
 
-  defp generate(app, _path) do
+  defp generate(app, noinput) do
     assigns = [
       app: app,
+      project: Macro.camelize(app),
       main_module: Macro.camelize(app),
-      project: Macro.camelize(app)
+      noinput: noinput
     ]
     create_file(".gitignore", gitignore_template(assigns))
     create_file("README.md", readme_template(assigns))
@@ -84,10 +90,21 @@ defmodule Mix.Tasks.Escript.New do
         app: :<%= @app %>,
         version: "0.1.0",
         deps: deps(),
-        escript: [
-          main_module: <%= @main_module %>
-        ]
+        escript: escript_options()
       ]
+    end
+
+    defp escript_options do
+      <%= if @noinput do %>
+      [
+        main_module: <%= @main_module %>,
+        emu_args: "-noinput"
+      ]
+      <% else %>
+      [
+        main_module: <%= @main_module %>
+      ]
+      <% end %>
     end
 
     defp deps do
