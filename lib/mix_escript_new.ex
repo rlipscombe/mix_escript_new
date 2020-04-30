@@ -33,6 +33,7 @@ defmodule Mix.Tasks.Escript.New do
       main_module: Macro.camelize(app),
       project: Macro.camelize(app)
     ]
+    create_file("README.md", readme_template(assigns))
     create_file("mix.exs", mix_exs_template(assigns))
     create_file("lib/#{app}.ex", main_module_template(assigns))
   end
@@ -44,6 +45,14 @@ defmodule Mix.Tasks.Escript.New do
       Mix.raise("Please select another directory for installation")
     end
   end
+
+  embed_template(:readme, """
+  # <= @project %> do
+
+  ## Building
+
+      mix escript.build
+  """)
 
   embed_template(:mix_exs, """
   defmodule <%= @project %>.MixProject do
