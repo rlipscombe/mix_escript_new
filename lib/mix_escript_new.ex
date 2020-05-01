@@ -94,20 +94,20 @@ defmodule Mix.Tasks.Escript.New do
         escript: escript_options()
       ]
     end
-
+    <%= if @noinput do %>
     defp escript_options do
-      <%= if @noinput do %>
       [
         main_module: <%= @main_module %>,
         emu_args: "-noinput"
       ]
-      <% else %>
+    end
+    <% else %>
+    defp escript_options do
       [
         main_module: <%= @main_module %>
       ]
-      <% end %>
     end
-
+    <% end %>
     defp deps do
       [
         # {:dep_from_hexpm, "~> 0.3.0"},
