@@ -90,6 +90,7 @@ defmodule Mix.Tasks.Escript.New do
         app: :<%= @app %>,
         version: "0.1.0",
         deps: deps(),
+        default_task: "escript.build",
         escript: escript_options()
       ]
     end
