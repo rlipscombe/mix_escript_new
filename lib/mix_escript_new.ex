@@ -74,7 +74,7 @@ defmodule Mix.Tasks.Escript.New do
   """)
 
   embed_template(:readme, """
-  # <%= @project %> do
+  # <%= @project %>
 
   ## Building
 
