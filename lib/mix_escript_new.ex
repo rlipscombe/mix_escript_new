@@ -32,6 +32,7 @@ defmodule Mix.Tasks.Escript.New do
 
       [path | _] ->
         app = opts[:app] || Path.basename(Path.expand(path))
+        check_application_name!(app, !opts[:app])
         noinput = opts[:noinput]
 
         unless path == "." do
@@ -42,6 +43,21 @@ defmodule Mix.Tasks.Escript.New do
         File.cd!(path, fn ->
           generate(app, noinput)
         end)
+    end
+  end
+
+  defp check_application_name!(name, inferred?) do
+    unless name =~ ~r/^[a-z][a-z0-9_]*$/ do
+      Mix.raise(
+        "Application name must start with a lowercase ASCII letter, followed by " <>
+          "lowercase ASCII letters, numbers, or underscores, got: #{inspect(name)}" <>
+          if inferred? do
+            ". The application name is inferred from the path, if you'd like to " <>
+              "explicitly name the application then use the \"--app APP\" option"
+          else
+            ""
+          end
+      )
     end
   end
 
