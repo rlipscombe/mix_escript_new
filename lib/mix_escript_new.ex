@@ -32,6 +32,7 @@ defmodule Mix.Tasks.Escript.New do
 
       [path | _] ->
         app = opts[:app] || Path.basename(Path.expand(path))
+        script = Path.basename(Path.expand(path))
         check_application_name!(app, !opts[:app])
         noinput = opts[:noinput]
 
@@ -41,7 +42,7 @@ defmodule Mix.Tasks.Escript.New do
         end
 
         File.cd!(path, fn ->
-          generate(app, noinput)
+          generate(script, app, noinput)
         end)
     end
   end
@@ -61,11 +62,12 @@ defmodule Mix.Tasks.Escript.New do
     end
   end
 
-  defp generate(app, noinput) do
+  defp generate(script, app, noinput) do
     assigns = [
       app: app,
       project: Macro.camelize(app),
       main_module: Macro.camelize(app),
+      path: script,
       noinput: noinput
     ]
     create_file(".gitignore", gitignore_template(assigns))
@@ -114,13 +116,15 @@ defmodule Mix.Tasks.Escript.New do
     defp escript_options do
       [
         main_module: <%= @main_module %>,
+        path: "<%= @path %>",
         emu_args: "-noinput"
       ]
     end
     <% else %>
     defp escript_options do
       [
-        main_module: <%= @main_module %>
+        main_module: <%= @main_module %>,
+        path: "<%= @path %>"
       ]
     end
     <% end %>
