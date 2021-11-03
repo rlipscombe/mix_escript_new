@@ -117,7 +117,7 @@ defmodule Mix.Tasks.Escript.New do
       [
         main_module: <%= @main_module %>,
         path: "<%= @path %>",
-        emu_args: "-noinput"
+        emu_args: "--erl -noinput"
       ]
     end
     <% else %>
